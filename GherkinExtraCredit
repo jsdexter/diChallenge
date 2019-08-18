@@ -1,0 +1,22 @@
+/* Gherkin Extra Credit:
+    Feature: A user goes to Conversations.dealerinspire.com and attempts to log in
+
+    Given <user> inputs the wrong username
+        And <user> inputs the wrong password
+    When <user> clicks the "Login" button
+    Then <user> will see an error message of "The username or password you entered is not correct."
+
+
+    Feature: A user goes to Conversations.dealerinspire.com and attempts to log in with the wrong username and
+    password then user will click the
+
+    Given <user> inputs the wrong username
+        And <user> inputs the wrong password
+    When <user> clicks the "Login" button
+    Then <user> will see an error message of "The username or password you entered is not correct."
+
+    Given <user> clicks on the "Forget?" link
+    When <user> enters the wrong username
+        And clicks on the "Reset Password" Button
+    Then <user> will receive a message "We can't find a user with that username"
+ */
