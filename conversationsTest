@@ -1,0 +1,72 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+/* Feature: Dealer Inspire Automated Testing Code Challenge
+
+  This project is designed to log into Dealer Inspire's Conversations platform. The login will be invalid
+  and it will confirm the warning message that is shown. Then verify the message is displaying correctly. */
+
+public class TestSelenium {
+
+    @Test
+    public static void main(String[] args) throws InterruptedException {
+        ChromeDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, 20);
+
+        /* Given a user lands on the Conversations login page */
+        driver.get("https://conversations.dealerinspire.com");
+
+        /* When the login screen loads, input the wrong username */
+        WebElement userName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")));
+
+        /* WebElement userName = driver.findElement(By.name("username")); - I can use this if needed*/
+        userName.sendKeys("ABC12345");
+        userName.submit();
+
+        /* And user inputs the wrong password */
+        WebElement password = driver.findElement(By.name("password"));
+        password.sendKeys("wrongpassword");
+        password.submit();
+
+        /* Then we should see a warning message saying "The username or password you entered is not correct."*/
+        Thread.sleep(2000);
+        boolean invalidCredentials;
+        if (driver.findElementByCssSelector("#conversations-app > div > div.login-wrapper > div.left > div").isDisplayed())
+            invalidCredentials = true;
+        else invalidCredentials = false;
+
+        /* And print out the error message */
+        System.out.println("Error Message for login shown: " + invalidCredentials);
+        String errorText = driver.findElementByCssSelector("#conversations-app > div > div.login-wrapper > div.left > div").getText();
+        System.out.println("Error Text:  " + errorText);
+
+
+
+        /* When the login and password are wrong we should see a "Forget" link under the Login Buton - Click the Forget Link*/
+        WebElement forgetButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("forgot-password")));
+        forgetButton.click();
+
+        /* Then you are taken to a new screen with a text field to enter a Username */
+        WebElement forgetUser = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")));
+        forgetUser.sendKeys("ABC12345");
+        forgetUser.submit();
+
+        /* When the User enters an invalid Username you should see a message "We can't find a user with that username."*/
+        Thread.sleep(2000);
+        boolean invalidUserName;
+        if (driver.findElementByClassName("auth-errors").isDisplayed()) invalidUserName = true;
+        else invalidUserName = false;
+
+        /* And print out the error recovery message */
+        System.out.println("Error Message for password recovery: " + invalidUserName);
+        String userErrorText = driver.findElementByClassName("auth-errors").getText();
+        System.out.println("Error Text for password recovery:  " + userErrorText);
+
+        /* Verify the color of the Error Message */
+        WebElement errorUser = driver.findElementByClassName("auth-errors");
+        System.out.println("Color of the error message is: " + errorUser.getCssValue("color"));
+    }
+}
