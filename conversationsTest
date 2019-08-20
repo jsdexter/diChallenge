@@ -1,8 +1,12 @@
+import org.junit.Assert;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import java.util.NoSuchElementException;
+import static org.junit.Assert.assertTrue;
 
 /* Feature: Dealer Inspire Automated Testing Code Challenge
 
@@ -33,17 +37,15 @@ public class TestSelenium {
 
         /* Then we should see a warning message saying "The username or password you entered is not correct."*/
         Thread.sleep(2000);
-        boolean invalidCredentials;
-        if (driver.findElementByCssSelector("#conversations-app > div > div.login-wrapper > div.left > div").isDisplayed())
-            invalidCredentials = true;
-        else invalidCredentials = false;
-
-        /* And print out the error message */
-        System.out.println("Error Message for login shown: " + invalidCredentials);
-        String errorText = driver.findElementByCssSelector("#conversations-app > div > div.login-wrapper > div.left > div").getText();
-        System.out.println("Error Text:  " + errorText);
-
-
+        try {
+            WebElement e = driver.findElement(By.className("auth-errors"));
+            Assert.assertTrue(e.isDisplayed());
+            System.out.println(e);
+        } catch(NoSuchElementException nsee) {
+            System.out.println("The login error was not located.");
+        } catch(AssertionError ae) {
+            System.out.println("The login error was located, but not displayed.");
+        }
 
         /* When the login and password are wrong we should see a "Forget" link under the Login Buton - Click the Forget Link*/
         WebElement forgetButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("forgot-password")));
@@ -56,17 +58,18 @@ public class TestSelenium {
 
         /* When the User enters an invalid Username you should see a message "We can't find a user with that username."*/
         Thread.sleep(2000);
-        boolean invalidUserName;
-        if (driver.findElementByClassName("auth-errors").isDisplayed()) invalidUserName = true;
-        else invalidUserName = false;
+        try {
+            WebElement f = driver.findElement(By.className("auth-errors"));
+            Assert.assertTrue(f.isDisplayed());
+            System.out.println(f);
+        } catch(NoSuchElementException nsee) {
+            System.out.println("The login error was not located.");
+        } catch(AssertionError ae) {
+            System.out.println("The login error was located, but not displayed.");
+        }
 
-        /* And print out the error recovery message */
-        System.out.println("Error Message for password recovery: " + invalidUserName);
-        String userErrorText = driver.findElementByClassName("auth-errors").getText();
-        System.out.println("Error Text for password recovery:  " + userErrorText);
+        /* Verify the color of the Error Message is rgba(169, 68, 66, 1) */
+        String userError = "rgba(169, 68, 66, 1)";
+        WebElement currentError = driver.findElementByClassName("auth-errors");
 
-        /* Verify the color of the Error Message */
-        WebElement errorUser = driver.findElementByClassName("auth-errors");
-        System.out.println("Color of the error message is: " + errorUser.getCssValue("color"));
-    }
-}
+        assertTrue(currentError.getCssValue("color").contains(userError));
